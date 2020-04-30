@@ -64,7 +64,20 @@ public:
 	 * \param step
 	 * \param galaxy_thickness
 	 */
-	Star(const double initial_speed, const double area, const double step, const double galaxy_thickness);
+	constexpr Star(const double initial_speed, const double area, const double step, const double galaxy_thickness) {
+		is_alive = true;
+		position = create_spherical((gcem::sqrt(random_double(0., 1.)) - 0.5) * area,
+									random_double(0., 2. * pi<double>()),
+									pi<double>() * 0.5); // Multiplication plus rapide qu'une division.
+		position.z = ((random_double(0., 1.) - 0.5) * (area * galaxy_thickness));
+		speed = create_spherical(initial_speed, glm::get_phi(position) + pi<double>() * 0.5, pi<double>() * 0.5);
+		previous_position = position - speed * step;
+		acceleration = { 0., 0., 0. };
+		mass = 0.;
+		density = 0.;
+		index = 0;
+		block_index = 0;
+	}
 
 	Star(const Star &star) = default;
 
@@ -109,13 +122,13 @@ void initialize_galaxy(Star::container &galaxy,
 					   const double &galaxy_thickness);
 
 template<int N>
-std::array<Star, N> initialize_galaxy(const int stars_number,
-									  const double area,
-									  const double initial_speed,
-									  const double step,
-									  const bool is_black_hole,
-									  const double black_hole_mass,
-									  const double galaxy_thickness) {
+constexpr std::array<Star, N> initialize_galaxy(const int stars_number,
+												const double area,
+												const double initial_speed,
+												const double step,
+												const bool is_black_hole,
+												const double black_hole_mass,
+												const double galaxy_thickness) {
 	std::array<Star, N> galaxy;
 	std::size_t counter = 0;
 	for (int i = 0; i <= stars_number * 0.764; ++i, ++counter) {

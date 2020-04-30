@@ -62,10 +62,16 @@ namespace glm {
 		vector.z = 0.;
 
 		if (vector.y > 0)
-			return gcem::acos(vector.x / glm::length(vector));
+			return gcem::acos(vector.x / gcem::sqrt([=]() -> double {
+				const auto tmp = vector * vector;
+				return tmp.x + tmp.y + tmp.z;
+			}()));
 
 		if (vector.y < 0)
-			return 2 * pi<double>() - gcem::acos(vector.x / glm::length(vector));
+			return 2 * pi<double>() - gcem::acos(vector.x / gcem::sqrt([=]() -> double {
+				const auto tmp = vector * vector;
+				return tmp.x + tmp.y + tmp.z;
+			}()));
 	}
 }
 

@@ -3,22 +3,6 @@
 #include "block.h"
 #include <gcem.hpp>
 
-// Construit une étoile à des coordonnées aléatoires dans la zone
-Star::Star(const double initial_speed, const double area, const double step, const double galaxy_thickness) {
-	is_alive = true;
-	position = create_spherical((gcem::sqrt(random_double(0., 1.)) - 0.5) * area,
-								random_double(0., 2. * pi<double>()),
-								pi<double>() * 0.5); // Multiplication plus rapide qu'une division.
-	position.z = ((random_double(0., 1.) - 0.5) * (area * galaxy_thickness));
-	speed = create_spherical(initial_speed, glm::get_phi(position) + pi<double>() * 0.5, pi<double>() * 0.5);
-	previous_position = position - speed * step;
-	acceleration = { 0., 0., 0. };
-	mass = 0.;
-	density = 0.;
-	index = 0;
-	block_index = 0;
-}
-
 void Star::update_position(const double &step, bool verlet_integration) {
 	if (verlet_integration) {
 		auto temp = position;

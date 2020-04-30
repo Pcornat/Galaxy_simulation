@@ -23,7 +23,7 @@ set(SOURCES
 	includes/utils.h
 	includes/vector.h)
 
-set(COMPILE_FLAGS
+set(COMPILE_OPTIONS
 	-pipe
 	-march=native
 	-Wall
@@ -35,7 +35,8 @@ set(COMPILE_FLAGS
 	-funroll-loops
 	-flto
 	-fuse-ld=gold
-	-fuse-linker-plugin)
+	-fuse-linker-plugin
+	-fconstexpr-ops-limit=1000000000)
 
 set(LINKER_OPTIONS
 	-Wl,--sort-common,--as-needed

@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 
 	initialize_galaxy(galaxy, stars_number, area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
 
-//	const auto galax = initialize_galaxy<stars_number>(stars_number, area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
+	constexpr auto galax = initialize_galaxy<stars_number>(stars_number, area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
 
 	Star::range alive_galaxy = { galaxy.begin(), galaxy.end() };
 	double current_step = 1.;
