@@ -1,7 +1,6 @@
 #include "star.h"
 #include "utils.h"
 #include "block.h"
-#include <gcem.hpp>
 
 void Star::update_position(const double step, bool verlet_integration) {
 	if (verlet_integration) {
@@ -28,13 +27,27 @@ void Star::update_acceleration_and_density(const double precision, const Block &
 		acceleration = max_acceleration * normalize(acceleration);
 }
 
+std::ostream &operator<<(std::ostream &os, const Star &star) {
+	os << "position "
+	   << star.position
+	   << " speed "
+	   << star.speed
+	   << " acceleration "
+	   << star.acceleration
+	   << " mass "
+	   << star.mass
+	   << " density "
+	   << star.density;
+	return os;
+}
+
 glm::dvec3 force_and_density_calculation(const double precision, Star &star, const Block &block) {
 	glm::dvec3 force(0); // Tous les champs à 0.
 	const auto star_to_mass = (star.position - block.mass_center);
 	double distance = glm::distance(star.position, block.mass_center);
 
 	if (block.nb_stars == 1) {
-//		Star::container::iterator itStar = std::get<0>(block.contains);
+		Star::container::iterator itStar = std::get<0>(block.contains);
 
 		if (distance != 0.) {
 			double inv_distance = 1. / distance;

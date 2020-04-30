@@ -3,10 +3,12 @@
 
 #define GLM_FORCE_INLINE
 #define GLM_FORCE_SIZE_T_LENGTH
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/gtx/io.hpp>
 #include <gcem.hpp>
 #include <boost/math/constants/constants.hpp>
 

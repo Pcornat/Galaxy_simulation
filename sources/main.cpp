@@ -6,6 +6,8 @@
 #include <thread>
 #include <algorithm>
 #include <chrono>
+#include <iostream>
+#include <fstream>
 
 struct MutexRange {
 	Star::range part;
@@ -72,12 +74,9 @@ int main() {
 	Block block;
 
 	initialize_galaxy(galaxy, stars_number, area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
-	std::array<Star, stars_number> galax;
-	{
-		constexpr auto galax_ = initialize_galaxy<stars_number>(stars_number,
-																area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
-		galax = galax_;
-	}
+//	constexpr auto galax_ = initialize_galaxy<stars_number>(stars_number,
+//															area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
+//	std::array<Star, stars_number> galax = galax_;
 
 	Star::range alive_galaxy = { galaxy.begin(), galaxy.end() };
 	double current_step = 1.;
@@ -128,6 +127,13 @@ int main() {
 		for (auto &mp : mutparts) {
 			while (mp.ready != 2)
 				std::this_thread::sleep_for(1ms);
+		}
+		// On dump le pas de la simu :
+		{
+			std::ofstream output("galaxy_" + std::to_string(i) + ".txt", std::ios::out | std::ios::app | std::ios::trunc);
+			for (const auto &item : galaxy) {
+				output << item << '\n';
+			}
 		}
 		{
 			const auto prev_end = alive_galaxy.end;

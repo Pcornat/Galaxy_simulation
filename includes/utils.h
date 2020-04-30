@@ -73,7 +73,7 @@ constexpr auto get_random(int count) {
  * \return
  */
 constexpr double random_double(const double min, const double max) {
-	return get_random(static_cast<int>(max - min + min)) / static_cast<double>(RAND_MAX) * (max - min) + min;
+	return get_random(static_cast<int>(max - min + min)) / static_cast<double>(std::numeric_limits<PCG::result_type>::max()) * (max - min) + min;
 }
 
 

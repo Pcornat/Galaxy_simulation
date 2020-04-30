@@ -5,6 +5,7 @@
 #include "utils.h"
 #include <vector>
 #include <array>
+#include <ostream>
 
 class Block;
 
@@ -108,6 +109,7 @@ public:
 	 */
 	void update_acceleration_and_density(const double precision, const Block &block);
 
+	friend std::ostream &operator<<(std::ostream &os, const Star &star);
 };
 
 /**

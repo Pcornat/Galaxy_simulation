@@ -4,9 +4,9 @@
 
 std::array<Star::range, 8> set_octree(const Star::range &stars, const glm::dvec3 &pivot) {
 	const std::array<std::function<bool(const Star &star)>, 3> testStarAxis{
-			[&pivot](const Star &star) { return star.position.x < pivot.x; }, // 3 double c'est plus lourd qu'une référence.
-			[&pivot](const Star &star) { return star.position.y < pivot.y; },
-			[&pivot](const Star &star) { return star.position.z < pivot.z; }
+			[pivot](const Star &star) { return star.position.x < pivot.x; }, // 3 double c'est plus lourd qu'une référence.
+			[pivot](const Star &star) { return star.position.y < pivot.y; },
+			[pivot](const Star &star) { return star.position.z < pivot.z; }
 	};
 
 	std::array<Star::range, 8> result;
