@@ -92,34 +92,52 @@ public:
 	 * \param step
 	 * \param verlet_integration
 	 */
-	void update_position(const double &step, bool verlet_integration);
+	void update_position(const double step, bool verlet_integration);
 
 	/**
 	 * \brief Met à jour la vitesse
 	 * \param step
 	 * \param area
 	 */
-	void update_speed(const double &step, const double &area);
+	void update_speed(const double step, const double area);
 
 	/**
 	 * \brief Met à jour l'accélération et la densité
 	 * \param precision
 	 * \param block
 	 */
-	void update_acceleration_and_density(const double &precision, const Block &block);
+	void update_acceleration_and_density(const double precision, const Block &block);
 
 };
 
-glm::dvec3 force_and_density_calculation(const double &precision, Star &star, const Block &block);
+/**
+ * \brief Calcule la densité et la force exercée sur une étoile (divisée par la masse de l'étoile pour éviter des calculs inutiles)
+ * \param precision
+ * \param star
+ * \param block
+ * \return
+ */
+glm::dvec3 force_and_density_calculation(const double precision, Star &star, const Block &block);
 
+/**
+ * \brief Initialise la galaxie
+ * \param galaxy
+ * \param stars_number
+ * \param area
+ * \param initial_speed
+ * \param step
+ * \param is_black_hole
+ * \param black_hole_mass
+ * \param galaxy_thickness
+ */
 void initialize_galaxy(Star::container &galaxy,
 					   int stars_number,
-					   const double &area,
-					   const double &initial_speed,
-					   const double &step,
+					   const double area,
+					   const double initial_speed,
+					   const double step,
 					   bool is_black_hole,
-					   const double &black_hole_mass,
-					   const double &galaxy_thickness);
+					   const double black_hole_mass,
+					   const double galaxy_thickness);
 
 template<int N>
 constexpr std::array<Star, N> initialize_galaxy(const int stars_number,

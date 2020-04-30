@@ -29,7 +29,7 @@ template<size_t N>
 	mutparts.back().ready = 1;
 }
 
-int main(int argc, char *argv[]) {
+int main() {
 
 
 	// ------------------------- Paramètres de la simulation -------------------------
@@ -72,8 +72,12 @@ int main(int argc, char *argv[]) {
 	Block block;
 
 	initialize_galaxy(galaxy, stars_number, area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
-
-	constexpr auto galax = initialize_galaxy<stars_number>(stars_number, area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
+	std::array<Star, stars_number> galax;
+	{
+		constexpr auto galax_ = initialize_galaxy<stars_number>(stars_number,
+																area, initial_speed, step, is_black_hole, black_hole_mass, galaxy_thickness);
+		galax = galax_;
+	}
 
 	Star::range alive_galaxy = { galaxy.begin(), galaxy.end() };
 	double current_step = 1.;
@@ -107,7 +111,7 @@ int main(int argc, char *argv[]) {
 	std::array<std::thread, n_thread> mythreads;
 	std::array<MutexRange, n_thread> mutparts;
 
-	for (int i = 0; i < mythreads.size(); ++i) {
+	for (std::size_t i = 0; i < mythreads.size(); ++i) {
 		mutparts[i].ready = 0;
 		mythreads[i] = std::thread(update_stars, &mutparts[i]);
 	}

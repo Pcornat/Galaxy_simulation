@@ -41,7 +41,7 @@ constexpr double get_y(const double radius, const double phi, const double theta
  * \param theta
  * \return
  */
-constexpr double get_z(const double radius, const double phi, const double theta) {
+constexpr double get_z(const double radius, [[maybe_unused]] const double phi, const double theta) {
 	return gcem::cos(theta) * radius;
 }
 
@@ -67,11 +67,13 @@ namespace glm {
 				return tmp.x + tmp.y + tmp.z;
 			}()));
 
-		if (vector.y < 0)
+		else if (vector.y < 0)
 			return 2 * pi<double>() - gcem::acos(vector.x / gcem::sqrt([=]() -> double {
 				const auto tmp = vector * vector;
 				return tmp.x + tmp.y + tmp.z;
 			}()));
+		else
+			return std::numeric_limits<double>::signaling_NaN();
 	}
 }
 
