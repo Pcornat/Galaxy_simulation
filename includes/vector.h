@@ -1,38 +1,72 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <cmath>
-#include <vector>
-#include <list>
-#include <algorithm>
-#include <fstream>
-#include <thread>
-#include <atomic>
-#include <variant>
-#include <iostream>
-#include <array>
-#include <functional>
-
-
 #define GLM_FORCE_INLINE
 #define GLM_FORCE_SIZE_T_LENGTH
 
 #include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
+#include <gcem.hpp>
+#include <boost/math/constants/constants.hpp>
 
-glm::dvec3 create_spherical(const double &radius, const double &phi, const double &theta);
+using boost::math::constants::pi;
 
-double get_x(const double radius, const double phi, const double theta);
+/**
+ * \brief Donne la valeur cartésienne x à partir des coordonnées sphériques (en mètres)
+ * \param radius
+ * \param phi
+ * \param theta
+ * \return
+ */
+constexpr double get_x(const double radius, const double phi, const double theta) {
+	return gcem::cos(phi) * gcem::sin(theta) * radius;
+}
 
-double get_y(const double radius, const double phi, const double theta);
+/**
+ * \brief Donne la valeur cartésienne y à partir des coordonnées sphériques (en mètres)
+ * \param radius
+ * \param phi
+ * \param theta
+ * \return
+ */
+constexpr double get_y(const double radius, const double phi, const double theta) {
+	return gcem::sin(phi) * gcem::sin(theta) * radius;
+}
 
-double get_z(const double radius, const double phi, const double theta);
+/**
+ * \brief Donne la valeur cartésienne z à partir des coordonnées sphériques (en mètres)
+ * \param radius
+ * \param phi
+ * \param theta
+ * \return
+ */
+constexpr double get_z(const double radius, const double phi, const double theta) {
+	return gcem::cos(theta) * radius;
+}
+
+/**
+ * \brief Construit un vecteur à partir de ses coordonnées sphériques
+ * \param radius
+ * \param phi
+ * \param theta
+ * \return
+ */
+constexpr glm::dvec3 create_spherical(const double radius, const double phi, const double theta) {
+	return glm::dvec3(get_x(radius, phi, theta), get_y(radius, phi, theta), get_z(radius, phi, theta));
+}
 
 namespace glm {
-	[[nodiscard]] double get_phi(const glm::dvec3 &vecteur);
+	[[nodiscard]] constexpr double get_phi(const glm::dvec3 &vecteur) {
+		auto vector = vecteur;
+		vector.z = 0.;
 
-	[[nodiscard]] double get_theta(const glm::dvec3 &vecteur);
+		if (vector.y > 0)
+			return gcem::acos(vector.x / glm::length(vector));
+
+		if (vector.y < 0)
+			return 2 * pi<double>() - gcem::acos(vector.x / glm::length(vector));
+	}
 }
 
 #endif

@@ -3,6 +3,8 @@
 
 #include "vector.h"
 #include "star.h"
+#include <variant>
+
 
 
 
@@ -37,7 +39,7 @@ public:
 
 	void update_mass_center_and_mass(const Star::range &stars);
 
-	void divide(Star::range galaxy);
+	void divide(const Star::range &stars);
 
 	void set_size(const double &size);
 };
