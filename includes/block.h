@@ -41,7 +41,7 @@ public:
 
 	void divide(const Star::range &stars);
 
-	void set_size(const double &size);
+	void set_size(const double size);
 };
 
 /**

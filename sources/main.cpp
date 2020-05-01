@@ -1,5 +1,3 @@
-#include "star.h"
-#include "utils.h"
 #include "block.h"
 #include <atomic>
 #include <array>
@@ -38,7 +36,7 @@ int main() {
 	constexpr double area = 1000. * LIGHT_YEAR;                // Taille de la zone d'apparition des étoiles (en années lumière)
 	constexpr double galaxy_thickness = 0.05;    // Epaisseur de la galaxie (en "area")
 
-	constexpr int stars_number = 50000;        // Nombre d'étoiles
+	constexpr std::uint32_t stars_number = 50000;        // Nombre d'étoiles
 	constexpr double initial_speed = 10000.;        // Vitesse initiale des d'étoiles (en mètres par seconde)
 
 	constexpr bool is_black_hole = false;        // Présence d'un trou noir
@@ -50,7 +48,7 @@ int main() {
 
 	constexpr std::size_t maxIter = 1000;
 
-	constexpr std::size_t n_thread = 4; // Le nombre de thread utilisé pour le calcul.
+	constexpr std::size_t n_thread = 7; // Le nombre de thread utilisé pour le calcul.
 
 
 
@@ -130,10 +128,12 @@ int main() {
 		}
 		// On dump le pas de la simu :
 		{
-			std::ofstream output("galaxy_" + std::to_string(i) + ".txt", std::ios::out | std::ios::app | std::ios::trunc);
+			std::ofstream output("galaxy_" + std::to_string(i) + ".txt", std::ios::out | std::ios::app);
+			output << "step " << current_step << '\n';
 			for (const auto &item : galaxy) {
 				output << item << '\n';
 			}
+			output << std::endl;
 		}
 		{
 			const auto prev_end = alive_galaxy.end;

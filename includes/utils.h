@@ -56,11 +56,14 @@ private:
 	}
 };
 
-constexpr auto get_random(int count) {
+constexpr auto get_random(PCG::result_type count) {
 	PCG pcg;
-	while (count > 0) {
+	/*while (count > 0) {
 		pcg();
 		--count;
+	}*/
+	for (size_t i = count; i > 0; --i) {
+		pcg();
 	}
 
 	return pcg();
@@ -72,8 +75,12 @@ constexpr auto get_random(int count) {
  * \param max
  * \return
  */
-constexpr double random_double(const double min, const double max) {
-	return get_random(static_cast<int>(max - min + min)) / static_cast<double>(std::numeric_limits<PCG::result_type>::max()) * (max - min) + min;
+constexpr static double random_double(const double min, const double max, const PCG::result_type seed) {
+	return (get_random(seed) / static_cast<double>(std::numeric_limits<PCG::result_type>::max())) * (max - min) + min;
+}
+
+static double random_double(const double min, const double max) {
+	return (static_cast<double>(rand()) / static_cast<double>(RAND_MAX)) * (max - min) + min;
 }
 
 

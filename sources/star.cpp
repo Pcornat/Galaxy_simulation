@@ -1,5 +1,4 @@
 #include "star.h"
-#include "utils.h"
 #include "block.h"
 
 void Star::update_position(const double step, bool verlet_integration) {
@@ -41,6 +40,21 @@ std::ostream &operator<<(std::ostream &os, const Star &star) {
 	return os;
 }
 
+Star::Star(const double initial_speed, const double area, const double step, const double galaxy_thickness) {
+	is_alive = true;
+	position = create_spherical((gcem::sqrt(random_double(0., 1.)) - 0.5) * area,
+								random_double(0., 2. * pi<double>()),
+								pi<double>() * 0.5); // Multiplication plus rapide qu'une division.
+	position.z = ((random_double(0., 1.) - 0.5) * (area * galaxy_thickness));
+	speed = create_spherical(initial_speed, glm::get_phi(position) + pi<double>() * 0.5, pi<double>() * 0.5);
+	previous_position = position - speed * step;
+	acceleration = { 0., 0., 0. };
+	mass = 0.;
+	density = 0.;
+	index = 0;
+	block_index = 0;
+}
+
 glm::dvec3 force_and_density_calculation(const double precision, Star &star, const Block &block) {
 	glm::dvec3 force(0); // Tous les champs à 0.
 	const auto star_to_mass = (star.position - block.mass_center);
@@ -73,11 +87,11 @@ glm::dvec3 force_and_density_calculation(const double precision, Star &star, con
 }
 
 void initialize_galaxy(Star::container &galaxy,
-					   int stars_number,
+					   const size_t stars_number,
 					   const double area,
 					   const double initial_speed,
 					   const double step,
-					   bool is_black_hole,
+					   const bool is_black_hole,
 					   const double black_hole_mass,
 					   const double galaxy_thickness) {
 	for (int i = 0; i <= stars_number * 0.764; ++i) {

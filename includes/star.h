@@ -59,18 +59,17 @@ public:
 
 	/**
 	 * \brief Construit une étoile à des coordonnées aléatoires dans la zone
-	 * \todo Le transformer en constexpr. Ou faire un constructeur vraiment constexpr avec un paramètre supplémentaire.
 	 * \param initial_speed
 	 * \param area
 	 * \param step
 	 * \param galaxy_thickness
 	 */
-	constexpr Star(const double initial_speed, const double area, const double step, const double galaxy_thickness) {
+	constexpr Star(const double initial_speed, const double area, const double step, const double galaxy_thickness, const PCG::result_type seed) {
 		is_alive = true;
-		position = create_spherical((gcem::sqrt(random_double(0., 1.)) - 0.5) * area,
-									random_double(0., 2. * pi<double>()),
+		position = create_spherical((gcem::sqrt(random_double(0., 1., seed)) - 0.5) * area,
+									random_double(0., 2. * pi<double>(), seed),
 									pi<double>() * 0.5); // Multiplication plus rapide qu'une division.
-		position.z = ((random_double(0., 1.) - 0.5) * (area * galaxy_thickness));
+		position.z = ((random_double(0., 1., seed) - 0.5) * (area * galaxy_thickness));
 		speed = create_spherical(initial_speed, glm::get_phi(position) + pi<double>() * 0.5, pi<double>() * 0.5);
 		previous_position = position - speed * step;
 		acceleration = { 0., 0., 0. };
@@ -79,6 +78,15 @@ public:
 		index = 0;
 		block_index = 0;
 	}
+
+	/**
+	 * \brief Construit une étoile à des coordonnées aléatoires dans la zone. Utilise la fontion rand()
+	 * \param initial_speed
+	 * \param area
+	 * \param step
+	 * \param galaxy_thickness
+	 */
+	Star(const double initial_speed, const double area, const double step, const double galaxy_thickness);
 
 	Star(const Star &star) = default;
 
@@ -133,16 +141,16 @@ glm::dvec3 force_and_density_calculation(const double precision, Star &star, con
  * \param galaxy_thickness
  */
 void initialize_galaxy(Star::container &galaxy,
-					   int stars_number,
+					   const size_t stars_number,
 					   const double area,
 					   const double initial_speed,
 					   const double step,
-					   bool is_black_hole,
+					   const bool is_black_hole,
 					   const double black_hole_mass,
 					   const double galaxy_thickness);
 
-template<int N>
-constexpr std::array<Star, N> initialize_galaxy(const int stars_number,
+template<std::size_t N>
+constexpr std::array<Star, N> initialize_galaxy(const std::size_t stars_number,
 												const double area,
 												const double initial_speed,
 												const double step,
@@ -152,43 +160,43 @@ constexpr std::array<Star, N> initialize_galaxy(const int stars_number,
 	std::array<Star, N> galaxy;
 	std::size_t counter = 0;
 	for (int i = 0; i <= stars_number * 0.764; ++i, ++counter) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
-		galaxy[counter].mass = random_double(0.08, 0.45) * SOLAR_MASS;
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
+		galaxy[counter].mass = random_double(0.08, 0.45, counter) * SOLAR_MASS;
 		galaxy[counter].index = counter == 0 ? 0 : counter - 1;
 	}
 
 	for (int i = 0; i <= stars_number * 0.121; ++i, ++counter) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
-		galaxy[counter].mass = random_double(0.45, 0.8) * SOLAR_MASS;
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
+		galaxy[counter].mass = random_double(0.45, 0.8, counter) * SOLAR_MASS;
 		galaxy[counter].index = counter - 1;
 	}
 
 	for (int i = 0; i <= stars_number * 0.076; ++i, ++counter) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
-		galaxy[counter].mass = random_double(0.8, 1.04) * SOLAR_MASS;
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
+		galaxy[counter].mass = random_double(0.8, 1.04, counter) * SOLAR_MASS;
 		galaxy[counter].index = counter - 1;
 	}
 
 	for (int i = 0; i <= stars_number * 0.030; ++i, ++counter) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
-		galaxy[counter].mass = random_double(1.04, 1.4) * SOLAR_MASS;
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
+		galaxy[counter].mass = random_double(1.04, 1.4, counter) * SOLAR_MASS;
 		galaxy[counter].index = counter - 1;
 	}
 
 	for (int i = 0; i <= stars_number * 0.006; ++i, ++counter) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
-		galaxy[counter].mass = random_double(1.4, 2.1) * SOLAR_MASS;
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
+		galaxy[counter].mass = random_double(1.4, 2.1, counter) * SOLAR_MASS;
 		galaxy[counter].index = counter - 1;
 	}
 
 	for (int i = 0; i <= stars_number * 0.0013; ++i, ++counter) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
-		galaxy[counter].mass = random_double(2.1, 16) * SOLAR_MASS;
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
+		galaxy[counter].mass = random_double(2.1, 16, counter) * SOLAR_MASS;
 		galaxy[counter].index = counter - 1;
 	}
 	++counter;
 	if (is_black_hole) {
-		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness);
+		galaxy[counter] = Star(initial_speed, area, step, galaxy_thickness, counter);
 		galaxy[counter].position = { 0., 0., 0. };
 		galaxy[counter].speed = { 0., 0., 0. };
 		galaxy[counter].mass = black_hole_mass * SOLAR_MASS;
